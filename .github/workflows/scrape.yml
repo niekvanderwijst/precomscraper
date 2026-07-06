@@ -1,0 +1,34 @@
+name: Scrape PreCom
+
+on:
+  schedule:
+    - cron: '0 6 * * *'   # elke dag om 06:00 UTC (08:00 NL-tijd)
+  workflow_dispatch:        # ook handmatig te starten via GitHub
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Installeer dependencies
+        run: |
+          pip install playwright pandas
+          playwright install chromium
+          playwright install-deps chromium
+
+      - name: Draai scraper
+        env:
+          PRECOM_USERNAME: ${{ secrets.PRECOM_USERNAME }}
+          PRECOM_PASSWORD: ${{ secrets.PRECOM_PASSWORD }}
+        run: python precom_scraper.py
+
+      - name: Publiceer naar GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
