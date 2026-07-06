@@ -7,13 +7,8 @@ import os
 
 USERNAME = os.environ["PRECOM_USERNAME"]
 PASSWORD = os.environ["PRECOM_PASSWORD"]
-TEST = os.environ["TESTTEST"]
+
 os.makedirs("public", exist_ok=True)
-
-
-
-
-
 
 def read_occupancy_table(page) -> pd.DataFrame:
     page.wait_for_selector("#form_OccupancyProposalCounter")
@@ -239,9 +234,6 @@ with sync_playwright() as p:
     browser = p.chromium.launch(headless=True)
     page = browser.new_page()
 
-    print("test if variable is working")
-    print(TEST)
-
     # Login
     page.goto("https://portal.pre-com.nl/PreCom/Account/Login")
     page.fill('input[type="text"]', USERNAME)
@@ -251,29 +243,16 @@ with sync_playwright() as p:
 
     print("Controleren of gebruiker is ingelogd...")
 
-    LoginResult = True
+    # Navigeer naar bezettingsvoorstel
+    page.get_by_text("Algemeen", exact=True).click()
+    page.get_by_text("Bezettings voorstel", exact=True).click()
+    page.wait_for_load_state("networkidle")
 
-    try:
-        expect(page.locator("[data-testid='user-menu']")).to_be_visible(timeout=5000)
-        print("✅ Login succesvol.")
-    except AssertionError as e:
-        print("❌ Login mislukt.")
-        LoginResult = False
-        raise
+    page.locator("#form_OccupancyProposalCounter").wait_for()
 
-    if(LoginResult == True):
-        # Navigeer naar bezettingsvoorstel
-        page.get_by_text("Algemeen", exact=True).click()
-        page.get_by_text("Bezettings voorstel", exact=True).click()
-        page.wait_for_load_state("networkidle")
-
-        page.locator("#form_OccupancyProposalCounter").wait_for()
-
-        df = read_occupancy_table(page)
-        print_per_rol(df)
-        #export_to_html(df, "/Users/Niek/Sites/PrecomScraper/Public/index.html")
-        export_to_html(df, "public/index.html")
-    else:
-        Print("Do nothing")
+    df = read_occupancy_table(page)
+    print_per_rol(df)
+    #export_to_html(df, "/Users/Niek/Sites/PrecomScraper/Public/index.html")
+    export_to_html(df, "public/index.html")
 
     browser.close()
