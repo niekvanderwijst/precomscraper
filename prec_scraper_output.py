@@ -1,6 +1,7 @@
 import pandas as pd
 from datetime import datetime
 from playwright.sync_api import sync_playwright
+from playwright.sync_api import expect
 import os
 
 
@@ -244,16 +245,31 @@ with sync_playwright() as p:
     page.click('button[type="button"]')
     page.wait_for_load_state("networkidle")
 
-    # Navigeer naar bezettingsvoorstel
-    page.get_by_text("Algemeen", exact=True).click()
-    page.get_by_text("Bezettings voorstel", exact=True).click()
-    page.wait_for_load_state("networkidle")
+    print("Controleren of gebruiker is ingelogd...")
 
-    page.locator("#form_OccupancyProposalCounter").wait_for()
+    LoginResult = True
 
-    df = read_occupancy_table(page)
-    print_per_rol(df)
-    #export_to_html(df, "/Users/Niek/Sites/PrecomScraper/Public/index.html")
-    export_to_html(df, "public/index.html")
+    try:
+        expect(page.locator("[data-testid='user-menu']")).to_be_visible(timeout=5000)
+        print("✅ Login succesvol.")
+    except AssertionError as e:
+        print("❌ Login mislukt.")
+        LoginResult = False
+        raise
+
+    if(LoginResult == True):
+        # Navigeer naar bezettingsvoorstel
+        page.get_by_text("Algemeen", exact=True).click()
+        page.get_by_text("Bezettings voorstel", exact=True).click()
+        page.wait_for_load_state("networkidle")
+
+        page.locator("#form_OccupancyProposalCounter").wait_for()
+
+        df = read_occupancy_table(page)
+        print_per_rol(df)
+        #export_to_html(df, "/Users/Niek/Sites/PrecomScraper/Public/index.html")
+        export_to_html(df, "public/index.html")
+    else:
+        Print("Do nothing")
 
     browser.close()
