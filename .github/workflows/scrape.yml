@@ -2,7 +2,7 @@ name: Scrape PreCom
 
 on:
   schedule:
-    - cron: '59 * * * *'   # Runs at 59 minutes past the hour.
+    - cron: '13 * * * *'   # Runs at 13 minutes past the hour.
   workflow_dispatch:        # ook handmatig te starten via GitHub
 
 jobs:
