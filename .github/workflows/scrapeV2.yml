@@ -1,0 +1,16 @@
+name: Scrape PreCom V2
+
+on:
+  schedule:
+    - cron: '17 * * * *'  # Runs at the start of every hour
+  workflow_dispatch:       # Allows manual triggering
+
+jobs:
+  print-time:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Print current time
+        run: |
+          echo "Current UTC time: $(date)"
+          echo "Formatted time:   $(date '+%Y-%m-%d %H:%M:%S')"
