@@ -25,7 +25,7 @@ jobs:
         env:
           PRECOM_USERNAME: ${{ secrets.PRECOM_USERNAME }}
           PRECOM_PASSWORD: ${{ secrets.PRECOM_PASSWORD }}
-        run: python precom_scraper.py
+        run: python prec_scraper_output.py
 
       - name: Publiceer naar GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
