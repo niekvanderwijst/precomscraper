@@ -7,6 +7,7 @@ import os
 
 USERNAME = os.environ["PRECOM_USERNAME"]
 PASSWORD = os.environ["PRECOM_PASSWORD"]
+TEST = os.environ["TESTTEST"]
 os.makedirs("public", exist_ok=True)
 
 
@@ -237,6 +238,9 @@ def print_per_rol(df: pd.DataFrame):
 with sync_playwright() as p:
     browser = p.chromium.launch(headless=True)
     page = browser.new_page()
+
+    print("test if variable is working")
+    print(TEST)
 
     # Login
     page.goto("https://portal.pre-com.nl/PreCom/Account/Login")
