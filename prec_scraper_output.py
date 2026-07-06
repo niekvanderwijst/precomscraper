@@ -1,5 +1,6 @@
 import pandas as pd
 from datetime import datetime
+from zoneinfo import ZoneInfo
 from playwright.sync_api import sync_playwright
 from playwright.sync_api import expect
 import os
@@ -62,7 +63,8 @@ def read_occupancy_table(page) -> pd.DataFrame:
 def export_to_html(df: pd.DataFrame, filepath: str = "index.html"):
     """Exporteer de bezettingsdata per rol als nette HTML-pagina."""
 
-    timestamp = datetime.now().strftime("%d-%m-%Y %H:%M")
+    now = datetime.now(ZoneInfo("Europe/Amsterdam"))
+    timestamp = now.strftime("%d-%m-%Y %H:%M:%S %Z")
 
     # Bouw de rol-secties
     sections_html = ""
