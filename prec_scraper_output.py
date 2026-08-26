@@ -60,11 +60,82 @@ def read_occupancy_table(page) -> pd.DataFrame:
     return pd.DataFrame(data).set_index("Naam")
 
 
+def build_voorstel_tabel(df: pd.DataFrame) -> str:
+    """
+    Bouw de voorgestelde bezetting tabel op basis van:
+    - 1 Bevelvoerder  (laagste waarde)
+    - 1 Chauffeur TS  (laagste waarde)
+    - 1 Chauffeur WT  (laagste waarde)
+    - 1 Manschap WT   (laagste waarde)
+    - 4 Manschap      (laagste 4 waarden)
+    Niemand wordt dubbel ingepland.
+    """
+
+    gekozen = set()
+    rijen = []
+
+    def kies_persoon(rol: str, aantal: int = 1):
+        if rol not in df.columns:
+            return []
+        serie = df[rol].dropna().sort_values()
+        resultaat = []
+        for naam, waarde in serie.items():
+            if naam not in gekozen:
+                gekozen.add(naam)
+                resultaat.append((naam, waarde))
+                if len(resultaat) == aantal:
+                    break
+        return resultaat
+
+    # Volgorde van toewijzing bepaalt prioriteit bij overlap
+    taken = [
+        ("Bevelvoerder",  "Bevelvoerder",  1),
+        ("Chauffeur TS",  "Chauffeur TS",  1),
+        ("Chauffeur WT",  "Chauffeur WT",  1),
+        ("Manschap WT",   "Manschap WT",   1),
+        ("Manschap",      "Manschap",      4),
+    ]
+
+    for label, rol, aantal in taken:
+        personen = kies_persoon(rol, aantal)
+        for i, (naam, waarde) in enumerate(personen):
+            display_label = f"{label} {i + 1}" if aantal > 1 else label
+            color_class = "positive" if waarde < 0 else "negative" if waarde > 0 else "neutral"
+            rijen.append(f"""
+                <tr>
+                    <td><span class="badge">{display_label}</span></td>
+                    <td>{naam}</td>
+                    <td class="{color_class}">{waarde:.2f}</td>
+                </tr>""")
+
+    rows_html = "\n".join(rijen)
+
+    return f"""
+    <div class="voorstel-block">
+        <h2>Voorgestelde Bezetting</h2>
+        <table class="voorstel-table">
+            <thead>
+                <tr>
+                    <th>Rol</th>
+                    <th>Naam</th>
+                    <th>Punten</th>
+                </tr>
+            </thead>
+            <tbody>
+                {rows_html}
+            </tbody>
+        </table>
+    </div>"""
+
+
 def export_to_html(df: pd.DataFrame, filepath: str = "index.html"):
     """Exporteer de bezettingsdata per rol als nette HTML-pagina."""
 
     now = datetime.now(ZoneInfo("Europe/Amsterdam"))
     timestamp = now.strftime("%d-%m-%Y %H:%M:%S %Z")
+
+    # Bouw de voorstel sectie
+    voorstel_html = build_voorstel_tabel(df)
 
     # Bouw de rol-secties
     sections_html = ""
@@ -74,9 +145,10 @@ def export_to_html(df: pd.DataFrame, filepath: str = "index.html"):
         if serie.empty:
             continue
 
+        block_id = rol.lower().replace(" ", "-")
+
         rows_html = ""
         for naam, waarde in serie.items():
-            # Negatieve waarden krijgen een rode kleur, positief groen
             color_class = "positive" if waarde < 0 else "negative" if waarde > 0 else "neutral"
             rows_html += f"""
                 <tr>
@@ -85,7 +157,7 @@ def export_to_html(df: pd.DataFrame, filepath: str = "index.html"):
                 </tr>"""
 
         sections_html += f"""
-        <div class="rol-block">
+        <div class="rol-block" id="block-{block_id}">
             <h2>{rol}</h2>
             <table>
                 <thead>
@@ -115,8 +187,8 @@ def export_to_html(df: pd.DataFrame, filepath: str = "index.html"):
 
         body {{
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            background: #f4f6f9;
-            color: #333;
+            background: #0f1117;
+            color: #e0e0e0;
             padding: 2rem;
         }}
 
@@ -127,12 +199,12 @@ def export_to_html(df: pd.DataFrame, filepath: str = "index.html"):
         header h1 {{
             font-size: 1.6rem;
             font-weight: 600;
-            color: #1a1a2e;
+            color: #ffffff;
         }}
 
         header p {{
             font-size: 0.85rem;
-            color: #888;
+            color: #666;
             margin-top: 0.25rem;
         }}
 
@@ -143,15 +215,16 @@ def export_to_html(df: pd.DataFrame, filepath: str = "index.html"):
         }}
 
         .rol-block {{
-            background: #fff;
+            background: #1e2130;
             border-radius: 8px;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.4);
             overflow: hidden;
+            border: 1px solid #2a2d3e;
         }}
 
         .rol-block h2 {{
-            background: #1a1a2e;
-            color: #fff;
+            background: #2a2d3e;
+            color: #a0aec0;
             font-size: 0.95rem;
             font-weight: 500;
             padding: 0.75rem 1rem;
@@ -165,7 +238,7 @@ def export_to_html(df: pd.DataFrame, filepath: str = "index.html"):
         }}
 
         thead tr {{
-            background: #f0f2f5;
+            background: #181b27;
         }}
 
         th {{
@@ -173,18 +246,19 @@ def export_to_html(df: pd.DataFrame, filepath: str = "index.html"):
             text-align: left;
             font-weight: 600;
             font-size: 0.8rem;
-            color: #666;
+            color: #4a5568;
             text-transform: uppercase;
             letter-spacing: 0.05em;
         }}
 
         td {{
             padding: 0.55rem 1rem;
-            border-top: 1px solid #f0f2f5;
+            border-top: 1px solid #2a2d3e;
+            color: #cbd5e0;
         }}
 
         tr:hover td {{
-            background: #fafbfc;
+            background: #252837;
         }}
 
         td:last-child {{
@@ -193,9 +267,59 @@ def export_to_html(df: pd.DataFrame, filepath: str = "index.html"):
             font-weight: 500;
         }}
 
-        .negative {{ color: #e53935; }}
-        .positive {{ color: #43a047; }}
-        .neutral  {{ color: #888; }}
+        .negative {{ color: #fc8181; }}
+        .positive {{ color: #68d391; }}
+        .neutral  {{ color: #718096; }}
+
+        /* Voorstel blok */
+        .voorstel-block {{
+            background: #1e2130;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.5);
+            overflow: hidden;
+            border: 1px solid #3d4f7c;
+            margin-bottom: 2rem;
+        }}
+
+        .voorstel-block h2 {{
+            background: #2d3a5e;
+            color: #90cdf4;
+            font-size: 1rem;
+            font-weight: 600;
+            padding: 0.85rem 1rem;
+            letter-spacing: 0.03em;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }}
+
+        .voorstel-block h2::before {{
+            content: "⚡";
+        }}
+
+        .voorstel-table td:first-child {{
+            color: #90cdf4;
+            font-weight: 500;
+            width: 180px;
+        }}
+
+        .voorstel-table td:nth-child(2) {{
+            color: #e2e8f0;
+        }}
+
+        .voorstel-table td:last-child {{
+            text-align: right;
+        }}
+
+        .badge {{
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: #2d3a5e;
+            color: #90cdf4;
+        }}
     </style>
 </head>
 <body>
@@ -203,6 +327,8 @@ def export_to_html(df: pd.DataFrame, filepath: str = "index.html"):
         <h1>Bezettingsvoorstel</h1>
         <p>Gegenereerd op {timestamp}</p>
     </header>
+
+    {voorstel_html}
 
     <div class="grid">
         {sections_html}
@@ -214,6 +340,7 @@ def export_to_html(df: pd.DataFrame, filepath: str = "index.html"):
         f.write(html)
 
     print(f"Opgeslagen als {filepath}")
+
 
 def print_per_rol(df: pd.DataFrame):
     """Print per rol een gesorteerde lijst van laag naar hoog, alleen gevulde waarden."""
@@ -229,7 +356,6 @@ def print_per_rol(df: pd.DataFrame):
         print(f"{'='*40}")
         for naam, waarde in serie.items():
             print(f"  {naam:<30} {waarde:>8.2f}")
-
 
 
 with sync_playwright() as p:
@@ -254,7 +380,6 @@ with sync_playwright() as p:
 
     df = read_occupancy_table(page)
     print_per_rol(df)
-    #export_to_html(df, "/Users/Niek/Sites/PrecomScraper/Public/index.html")
     export_to_html(df, "public/index.html")
 
     browser.close()
