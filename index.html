@@ -13,8 +13,8 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            background: #f4f6f9;
-            color: #333;
+            background: #0f1117;
+            color: #e0e0e0;
             padding: 2rem;
         }
 
@@ -25,12 +25,12 @@
         header h1 {
             font-size: 1.6rem;
             font-weight: 600;
-            color: #1a1a2e;
+            color: #ffffff;
         }
 
         header p {
             font-size: 0.85rem;
-            color: #888;
+            color: #666;
             margin-top: 0.25rem;
         }
 
@@ -41,15 +41,16 @@
         }
 
         .rol-block {
-            background: #fff;
+            background: #1e2130;
             border-radius: 8px;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.4);
             overflow: hidden;
+            border: 1px solid #2a2d3e;
         }
 
         .rol-block h2 {
-            background: #1a1a2e;
-            color: #fff;
+            background: #2a2d3e;
+            color: #a0aec0;
             font-size: 0.95rem;
             font-weight: 500;
             padding: 0.75rem 1rem;
@@ -63,7 +64,7 @@
         }
 
         thead tr {
-            background: #f0f2f5;
+            background: #181b27;
         }
 
         th {
@@ -71,18 +72,19 @@
             text-align: left;
             font-weight: 600;
             font-size: 0.8rem;
-            color: #666;
+            color: #4a5568;
             text-transform: uppercase;
             letter-spacing: 0.05em;
         }
 
         td {
             padding: 0.55rem 1rem;
-            border-top: 1px solid #f0f2f5;
+            border-top: 1px solid #2a2d3e;
+            color: #cbd5e0;
         }
 
         tr:hover td {
-            background: #fafbfc;
+            background: #252837;
         }
 
         td:last-child {
@@ -91,20 +93,134 @@
             font-weight: 500;
         }
 
-        .negative { color: #e53935; }
-        .positive { color: #43a047; }
-        .neutral  { color: #888; }
+        .negative { color: #fc8181; }
+        .positive { color: #68d391; }
+        .neutral  { color: #718096; }
+
+        /* Voorstel blok */
+        .voorstel-block {
+            background: #1e2130;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.5);
+            overflow: hidden;
+            border: 1px solid #3d4f7c;
+            margin-bottom: 2rem;
+        }
+
+        .voorstel-block h2 {
+            background: #2d3a5e;
+            color: #90cdf4;
+            font-size: 1rem;
+            font-weight: 600;
+            padding: 0.85rem 1rem;
+            letter-spacing: 0.03em;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .voorstel-block h2::before {
+            content: "⚡";
+        }
+
+        .voorstel-table td:first-child {
+            color: #90cdf4;
+            font-weight: 500;
+            width: 180px;
+        }
+
+        .voorstel-table td:nth-child(2) {
+            color: #e2e8f0;
+        }
+
+        .voorstel-table td:last-child {
+            text-align: right;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: #2d3a5e;
+            color: #90cdf4;
+        }
     </style>
 </head>
 <body>
     <header>
         <h1>Bezettingsvoorstel</h1>
-        <p>Gegenereerd op 26-08-2026 16:59:04 CEST</p>
+        <p>Gegenereerd op 26-08-2026 18:33:23 CEST</p>
     </header>
+
+    
+    <div class="voorstel-block">
+        <h2>Voorgestelde Bezetting</h2>
+        <table class="voorstel-table">
+            <thead>
+                <tr>
+                    <th>Rol</th>
+                    <th>Naam</th>
+                    <th>Punten</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+                <tr>
+                    <td><span class="badge">Bevelvoerder</span></td>
+                    <td>Emiel van Kessel</td>
+                    <td class="positive">-0.50</td>
+                </tr>
+
+                <tr>
+                    <td><span class="badge">Chauffeur TS</span></td>
+                    <td>Evert van Dasler</td>
+                    <td class="positive">-2.25</td>
+                </tr>
+
+                <tr>
+                    <td><span class="badge">Chauffeur WT</span></td>
+                    <td>Jeroen Cornelissen</td>
+                    <td class="positive">-2.25</td>
+                </tr>
+
+                <tr>
+                    <td><span class="badge">Manschap WT</span></td>
+                    <td>Daan Jansen</td>
+                    <td class="positive">-2.00</td>
+                </tr>
+
+                <tr>
+                    <td><span class="badge">Manschap 1</span></td>
+                    <td>Werner van Sambeek</td>
+                    <td class="positive">-1.00</td>
+                </tr>
+
+                <tr>
+                    <td><span class="badge">Manschap 2</span></td>
+                    <td>Bram Schuurmans</td>
+                    <td class="positive">-0.50</td>
+                </tr>
+
+                <tr>
+                    <td><span class="badge">Manschap 3</span></td>
+                    <td>Kevin Theunissen</td>
+                    <td class="positive">-0.40</td>
+                </tr>
+
+                <tr>
+                    <td><span class="badge">Manschap 4</span></td>
+                    <td>Maico van Dasler</td>
+                    <td class="positive">-0.33</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
     <div class="grid">
         
-        <div class="rol-block">
+        <div class="rol-block" id="block-bevelvoerder">
             <h2>Bevelvoerder</h2>
             <table>
                 <thead>
@@ -138,7 +254,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="rol-block">
+        <div class="rol-block" id="block-manschap">
             <h2>Manschap</h2>
             <table>
                 <thead>
@@ -236,7 +352,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="rol-block">
+        <div class="rol-block" id="block-chauffeur-ts">
             <h2>Chauffeur TS</h2>
             <table>
                 <thead>
@@ -290,7 +406,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="rol-block">
+        <div class="rol-block" id="block-chauffeur-wt">
             <h2>Chauffeur WT</h2>
             <table>
                 <thead>
@@ -344,7 +460,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="rol-block">
+        <div class="rol-block" id="block-manschap-wt">
             <h2>Manschap WT</h2>
             <table>
                 <thead>
