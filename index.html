@@ -281,7 +281,7 @@
 <body>
     <header>
         <h1>Bezettingsvoorstel</h1>
-        <p>Gegenereerd op 28-08-2026 16:55:36 CEST</p>
+        <p>Gegenereerd op 28-08-2026 17:09:40 CEST</p>
     </header>
 
     <div class="tabs">
@@ -747,8 +747,6 @@
     </div>
 
     <script>
-        const origineelVoorstel = [{"rol": "Bevelvoerder", "naam": "Emiel van Kessel", "waarde": -0.5}, {"rol": "Chauffeur TS", "naam": "Evert van Dasler", "waarde": -2.25}, {"rol": "Chauffeur WT", "naam": "Jeroen Cornelissen", "waarde": -2.25}, {"rol": "Manschap WT", "naam": "Daan Jansen", "waarde": -2.0}, {"rol": "Manschap 1", "naam": "Werner van Sambeek", "waarde": -1.0}, {"rol": "Manschap 2", "naam": "Bram Schuurmans", "waarde": -0.5}, {"rol": "Manschap 3", "naam": "Kevin Theunissen", "waarde": -0.4}, {"rol": "Manschap 4", "naam": "Maico van Dasler", "waarde": -0.33}];
-
         function switchTab(tabId, btn) {
             document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -766,6 +764,14 @@
             herbereken();
         }
 
+        function shuffle(lijst) {
+            for (let i = lijst.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [lijst[i], lijst[j]] = [lijst[j], lijst[i]];
+            }
+            return lijst;
+        }
+
         function herbereken() {
             const beschikbaarPerRol = {};
 
@@ -779,9 +785,11 @@
                 });
             });
 
-            Object.values(beschikbaarPerRol).forEach(lijst =>
-                lijst.sort((a, b) => a.waarde - b.waarde)
-            );
+            // Shuffle eerst, dan sorteren op waarde zodat gelijke punten random worden gekozen
+            Object.values(beschikbaarPerRol).forEach(lijst => {
+                shuffle(lijst);
+                lijst.sort((a, b) => a.waarde - b.waarde);
+            });
 
             const gekozen = new Set();
             const tbody = document.getElementById('voorstel-body');
