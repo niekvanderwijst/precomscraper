@@ -5,11 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bezettingsvoorstel</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -19,7 +15,7 @@
         }
 
         header {
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
         }
 
         header h1 {
@@ -34,6 +30,246 @@
             margin-top: 0.25rem;
         }
 
+        /* ── Tabs ── */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #2a2d3e;
+            padding-bottom: 0;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            color: #718096;
+            font-size: 0.95rem;
+            font-weight: 500;
+            padding: 0.6rem 1.2rem;
+            cursor: pointer;
+            transition: color 0.2s, border-color 0.2s;
+            margin-bottom: -2px;
+        }
+
+        .tab-btn:hover { color: #90cdf4; }
+
+        .tab-btn.active {
+            color: #90cdf4;
+            border-bottom-color: #90cdf4;
+        }
+
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+
+        /* ── Voorstel tab ── */
+        .voorstel-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 900px) {
+            .voorstel-layout { grid-template-columns: 1fr; }
+        }
+
+        /* Beschikbaarheid selectie */
+        .beschikbaarheid-panel {
+            background: #1e2130;
+            border-radius: 8px;
+            border: 1px solid #2a2d3e;
+            overflow: hidden;
+        }
+
+        .beschikbaarheid-panel .panel-header {
+            background: #2a2d3e;
+            padding: 0.85rem 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #a0aec0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .beschikbaarheid-panel .panel-header::before { content: "✅"; }
+
+        .beschikbaarheid-body {
+            padding: 1rem;
+            max-height: 520px;
+            overflow-y: auto;
+        }
+
+        .rol-groep {
+            margin-bottom: 1.2rem;
+        }
+
+        .rol-groep h3 {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #4a5568;
+            margin-bottom: 0.5rem;
+            padding-bottom: 0.3rem;
+            border-bottom: 1px solid #2a2d3e;
+        }
+
+        .checkbox-lijst {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.4rem 0.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .checkbox-item:hover { background: #252837; }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 15px;
+            height: 15px;
+            accent-color: #90cdf4;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .check-naam {
+            flex: 1;
+            font-size: 0.9rem;
+            color: #cbd5e0;
+        }
+
+        .check-waarde {
+            font-size: 0.85rem;
+            font-weight: 500;
+            font-variant-numeric: tabular-nums;
+            min-width: 48px;
+            text-align: right;
+        }
+
+        /* Acties */
+        .voorstel-acties {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.5rem 1.1rem;
+            border-radius: 6px;
+            border: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .btn:hover { opacity: 0.85; }
+
+        .btn-primary {
+            background: #2d3a5e;
+            color: #90cdf4;
+            border: 1px solid #3d4f7c;
+        }
+
+        .btn-secondary {
+            background: #252837;
+            color: #a0aec0;
+            border: 1px solid #2a2d3e;
+        }
+
+        /* Voorstel resultaat */
+        .voorstel-resultaat {
+            background: #1e2130;
+            border-radius: 8px;
+            border: 1px solid #3d4f7c;
+            overflow: hidden;
+        }
+
+        .voorstel-resultaat .panel-header {
+            background: #2d3a5e;
+            padding: 0.85rem 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #90cdf4;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .voorstel-resultaat .panel-header::before { content: "⚡"; }
+
+        .voorstel-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        .voorstel-table thead tr { background: #181b27; }
+
+        .voorstel-table th {
+            padding: 0.5rem 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: #4a5568;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .voorstel-table td {
+            padding: 0.55rem 1rem;
+            border-top: 1px solid #2a2d3e;
+            color: #cbd5e0;
+        }
+
+        .voorstel-table tr:hover td { background: #252837; }
+
+        .voorstel-table td:last-child {
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+            font-weight: 500;
+        }
+
+        .voorstel-table td:first-child { color: #90cdf4; width: 180px; }
+
+        .badge {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: #2d3a5e;
+            color: #90cdf4;
+        }
+
+        .badge.vervangen {
+            background: #3a2d2d;
+            color: #fc8181;
+        }
+
+        .onbeschikbaar td {
+            opacity: 0.4;
+            text-decoration: line-through;
+        }
+
+        .voorstel-leeg {
+            padding: 1.5rem 1rem;
+            color: #4a5568;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        /* ── Overzicht tab ── */
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -63,9 +299,7 @@
             font-size: 0.9rem;
         }
 
-        thead tr {
-            background: #181b27;
-        }
+        thead tr { background: #181b27; }
 
         th {
             padding: 0.5rem 1rem;
@@ -83,9 +317,7 @@
             color: #cbd5e0;
         }
 
-        tr:hover td {
-            background: #252837;
-        }
+        tr:hover td { background: #252837; }
 
         td:last-child {
             text-align: right;
@@ -97,140 +329,596 @@
         .positive { color: #68d391; }
         .neutral  { color: #718096; }
 
-        /* Voorstel blok */
-        .voorstel-block {
-            background: #1e2130;
-            border-radius: 8px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.5);
-            overflow: hidden;
-            border: 1px solid #3d4f7c;
-            margin-bottom: 2rem;
-        }
-
-        .voorstel-block h2 {
-            background: #2d3a5e;
-            color: #90cdf4;
-            font-size: 1rem;
-            font-weight: 600;
-            padding: 0.85rem 1rem;
-            letter-spacing: 0.03em;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .voorstel-block h2::before {
-            content: "⚡";
-        }
-
-        .voorstel-table td:first-child {
-            color: #90cdf4;
-            font-weight: 500;
-            width: 180px;
-        }
-
-        .voorstel-table td:nth-child(2) {
-            color: #e2e8f0;
-        }
-
-        .voorstel-table td:last-child {
-            text-align: right;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 0.2rem 0.6rem;
-            border-radius: 999px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            background: #2d3a5e;
-            color: #90cdf4;
-        }
+        /* Scrollbar styling */
+        .beschikbaarheid-body::-webkit-scrollbar { width: 6px; }
+        .beschikbaarheid-body::-webkit-scrollbar-track { background: #1e2130; }
+        .beschikbaarheid-body::-webkit-scrollbar-thumb { background: #2a2d3e; border-radius: 3px; }
     </style>
 </head>
 <body>
     <header>
         <h1>Bezettingsvoorstel</h1>
-        <p>Gegenereerd op 28-08-2026 07:21:16 CEST</p>
+        <p>Gegenereerd op 28-08-2026 16:33:34 CEST</p>
     </header>
 
-    
-    <div class="voorstel-block">
-        <h2>Voorgestelde Bezetting</h2>
-        <table class="voorstel-table">
-            <thead>
-                <tr>
-                    <th>Rol</th>
-                    <th>Naam</th>
-                    <th>Punten</th>
-                </tr>
-            </thead>
-            <tbody>
-                
-                <tr>
-                    <td><span class="badge">Bevelvoerder</span></td>
-                    <td>Emiel van Kessel</td>
-                    <td class="positive">-0.50</td>
-                </tr>
-
-                <tr>
-                    <td><span class="badge">Chauffeur TS</span></td>
-                    <td>Evert van Dasler</td>
-                    <td class="positive">-2.25</td>
-                </tr>
-
-                <tr>
-                    <td><span class="badge">Chauffeur WT</span></td>
-                    <td>Jeroen Cornelissen</td>
-                    <td class="positive">-2.25</td>
-                </tr>
-
-                <tr>
-                    <td><span class="badge">Manschap WT</span></td>
-                    <td>Daan Jansen</td>
-                    <td class="positive">-2.00</td>
-                </tr>
-
-                <tr>
-                    <td><span class="badge">Manschap 1</span></td>
-                    <td>Werner van Sambeek</td>
-                    <td class="positive">-1.00</td>
-                </tr>
-
-                <tr>
-                    <td><span class="badge">Manschap 2</span></td>
-                    <td>Bram Schuurmans</td>
-                    <td class="positive">-0.50</td>
-                </tr>
-
-                <tr>
-                    <td><span class="badge">Manschap 3</span></td>
-                    <td>Kevin Theunissen</td>
-                    <td class="positive">-0.40</td>
-                </tr>
-
-                <tr>
-                    <td><span class="badge">Manschap 4</span></td>
-                    <td>Maico van Dasler</td>
-                    <td class="positive">-0.33</td>
-                </tr>
-            </tbody>
-        </table>
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('voorstel', this)">⚡ Voorgestelde Bezetting</button>
+        <button class="tab-btn" onclick="switchTab('overzicht', this)">📋 Overzicht per Rol</button>
     </div>
 
-    <div class="grid">
-        
+    <!-- TAB 1: Voorgestelde Bezetting -->
+    <div class="tab-panel active" id="tab-voorstel">
+        <div class="voorstel-acties">
+            <button class="btn btn-primary" onclick="herbereken()">🔄 Herbereken voorstel</button>
+            <button class="btn btn-secondary" onclick="alleDeselecteren()">✖ Alles deselecteren</button>
+        </div>
+
+        <div class="voorstel-layout">
+            <!-- Links: beschikbaarheid aanvinken -->
+            <div class="beschikbaarheid-panel">
+                <div class="panel-header">Beschikbaarheid</div>
+                <div class="beschikbaarheid-body">
+                    
+        <div class="rol-groep" id="checkgroup-bevelvoerder">
+            <h3>Bevelvoerder</h3>
+            <div class="checkbox-lijst">
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Emiel van Kessel"
+                           data-rol="Bevelvoerder"
+                           data-waarde="-0.5">
+                    <span class="check-naam">Emiel van Kessel</span>
+                    <span class="check-waarde positive">-0.50</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Harm Verhoeven"
+                           data-rol="Bevelvoerder"
+                           data-waarde="-0.4">
+                    <span class="check-naam">Harm Verhoeven</span>
+                    <span class="check-waarde positive">-0.40</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Kevin Theunissen"
+                           data-rol="Bevelvoerder"
+                           data-waarde="0.0">
+                    <span class="check-naam">Kevin Theunissen</span>
+                    <span class="check-waarde neutral">0.00</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Maico van Dasler"
+                           data-rol="Bevelvoerder"
+                           data-waarde="0.0">
+                    <span class="check-naam">Maico van Dasler</span>
+                    <span class="check-waarde neutral">0.00</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Teun van Tilborg"
+                           data-rol="Bevelvoerder"
+                           data-waarde="0.0">
+                    <span class="check-naam">Teun van Tilborg</span>
+                    <span class="check-waarde neutral">0.00</span>
+                </label>
+            </div>
+        </div>
+        <div class="rol-groep" id="checkgroup-manschap">
+            <h3>Manschap</h3>
+            <div class="checkbox-lijst">
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Daan Jansen"
+                           data-rol="Manschap"
+                           data-waarde="-1.5">
+                    <span class="check-naam">Daan Jansen</span>
+                    <span class="check-waarde positive">-1.50</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Werner van Sambeek"
+                           data-rol="Manschap"
+                           data-waarde="-1.0">
+                    <span class="check-naam">Werner van Sambeek</span>
+                    <span class="check-waarde positive">-1.00</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Evert van Dasler"
+                           data-rol="Manschap"
+                           data-waarde="-0.5">
+                    <span class="check-naam">Evert van Dasler</span>
+                    <span class="check-waarde positive">-0.50</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Bram Schuurmans"
+                           data-rol="Manschap"
+                           data-waarde="-0.5">
+                    <span class="check-naam">Bram Schuurmans</span>
+                    <span class="check-waarde positive">-0.50</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Kevin Theunissen"
+                           data-rol="Manschap"
+                           data-waarde="-0.4">
+                    <span class="check-naam">Kevin Theunissen</span>
+                    <span class="check-waarde positive">-0.40</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Maico van Dasler"
+                           data-rol="Manschap"
+                           data-waarde="-0.33">
+                    <span class="check-naam">Maico van Dasler</span>
+                    <span class="check-waarde positive">-0.33</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Teun van Tilborg"
+                           data-rol="Manschap"
+                           data-waarde="-0.33">
+                    <span class="check-naam">Teun van Tilborg</span>
+                    <span class="check-waarde positive">-0.33</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="(Paul) Reserve Pager"
+                           data-rol="Manschap"
+                           data-waarde="-0.25">
+                    <span class="check-naam">(Paul) Reserve Pager</span>
+                    <span class="check-waarde positive">-0.25</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Niek van der Wijst"
+                           data-rol="Manschap"
+                           data-waarde="-0.25">
+                    <span class="check-naam">Niek van der Wijst</span>
+                    <span class="check-waarde positive">-0.25</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Emiel van Kessel"
+                           data-rol="Manschap"
+                           data-waarde="0.0">
+                    <span class="check-naam">Emiel van Kessel</span>
+                    <span class="check-waarde neutral">0.00</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Frank Ermers"
+                           data-rol="Manschap"
+                           data-waarde="0.0">
+                    <span class="check-naam">Frank Ermers</span>
+                    <span class="check-waarde neutral">0.00</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Jeroen Cornelissen"
+                           data-rol="Manschap"
+                           data-waarde="0.0">
+                    <span class="check-naam">Jeroen Cornelissen</span>
+                    <span class="check-waarde neutral">0.00</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Karel Manders"
+                           data-rol="Manschap"
+                           data-waarde="0.0">
+                    <span class="check-naam">Karel Manders</span>
+                    <span class="check-waarde neutral">0.00</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="André Zegers"
+                           data-rol="Manschap"
+                           data-waarde="0.0">
+                    <span class="check-naam">André Zegers</span>
+                    <span class="check-waarde neutral">0.00</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Bono Arts"
+                           data-rol="Manschap"
+                           data-waarde="0.0">
+                    <span class="check-naam">Bono Arts</span>
+                    <span class="check-waarde neutral">0.00</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Bas van der Cruijsen"
+                           data-rol="Manschap"
+                           data-waarde="0.0">
+                    <span class="check-naam">Bas van der Cruijsen</span>
+                    <span class="check-waarde neutral">0.00</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Jeroen Eerkens"
+                           data-rol="Manschap"
+                           data-waarde="0.0">
+                    <span class="check-naam">Jeroen Eerkens</span>
+                    <span class="check-waarde neutral">0.00</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Marco Giesbers"
+                           data-rol="Manschap"
+                           data-waarde="0.0">
+                    <span class="check-naam">Marco Giesbers</span>
+                    <span class="check-waarde neutral">0.00</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Wessel Pruissen"
+                           data-rol="Manschap"
+                           data-waarde="0.0">
+                    <span class="check-naam">Wessel Pruissen</span>
+                    <span class="check-waarde neutral">0.00</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Harm Verhoeven"
+                           data-rol="Manschap"
+                           data-waarde="85.87">
+                    <span class="check-naam">Harm Verhoeven</span>
+                    <span class="check-waarde negative">85.87</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Willem Huvenaars"
+                           data-rol="Manschap"
+                           data-waarde="96.0">
+                    <span class="check-naam">Willem Huvenaars</span>
+                    <span class="check-waarde negative">96.00</span>
+                </label>
+            </div>
+        </div>
+        <div class="rol-groep" id="checkgroup-chauffeur-ts">
+            <h3>Chauffeur TS</h3>
+            <div class="checkbox-lijst">
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Evert van Dasler"
+                           data-rol="Chauffeur TS"
+                           data-waarde="-2.25">
+                    <span class="check-naam">Evert van Dasler</span>
+                    <span class="check-waarde positive">-2.25</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="André Zegers"
+                           data-rol="Chauffeur TS"
+                           data-waarde="-1.5">
+                    <span class="check-naam">André Zegers</span>
+                    <span class="check-waarde positive">-1.50</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Bram Schuurmans"
+                           data-rol="Chauffeur TS"
+                           data-waarde="-1.5">
+                    <span class="check-naam">Bram Schuurmans</span>
+                    <span class="check-waarde positive">-1.50</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Karel Manders"
+                           data-rol="Chauffeur TS"
+                           data-waarde="-1.25">
+                    <span class="check-naam">Karel Manders</span>
+                    <span class="check-waarde positive">-1.25</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="(Paul) Reserve Pager"
+                           data-rol="Chauffeur TS"
+                           data-waarde="-0.75">
+                    <span class="check-naam">(Paul) Reserve Pager</span>
+                    <span class="check-waarde positive">-0.75</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Jeroen Cornelissen"
+                           data-rol="Chauffeur TS"
+                           data-waarde="-0.5">
+                    <span class="check-naam">Jeroen Cornelissen</span>
+                    <span class="check-waarde positive">-0.50</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Marco Giesbers"
+                           data-rol="Chauffeur TS"
+                           data-waarde="-0.25">
+                    <span class="check-naam">Marco Giesbers</span>
+                    <span class="check-waarde positive">-0.25</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Harm Verhoeven"
+                           data-rol="Chauffeur TS"
+                           data-waarde="-0.2">
+                    <span class="check-naam">Harm Verhoeven</span>
+                    <span class="check-waarde positive">-0.20</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Niek van der Wijst"
+                           data-rol="Chauffeur TS"
+                           data-waarde="0.0">
+                    <span class="check-naam">Niek van der Wijst</span>
+                    <span class="check-waarde neutral">0.00</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Kevin Theunissen"
+                           data-rol="Chauffeur TS"
+                           data-waarde="96.07">
+                    <span class="check-naam">Kevin Theunissen</span>
+                    <span class="check-waarde negative">96.07</span>
+                </label>
+            </div>
+        </div>
+        <div class="rol-groep" id="checkgroup-chauffeur-wt">
+            <h3>Chauffeur WT</h3>
+            <div class="checkbox-lijst">
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Jeroen Cornelissen"
+                           data-rol="Chauffeur WT"
+                           data-waarde="-2.25">
+                    <span class="check-naam">Jeroen Cornelissen</span>
+                    <span class="check-waarde positive">-2.25</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Bram Schuurmans"
+                           data-rol="Chauffeur WT"
+                           data-waarde="-2.0">
+                    <span class="check-naam">Bram Schuurmans</span>
+                    <span class="check-waarde positive">-2.00</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Harm Verhoeven"
+                           data-rol="Chauffeur WT"
+                           data-waarde="-1.9">
+                    <span class="check-naam">Harm Verhoeven</span>
+                    <span class="check-waarde positive">-1.90</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Kevin Theunissen"
+                           data-rol="Chauffeur WT"
+                           data-waarde="-1.0">
+                    <span class="check-naam">Kevin Theunissen</span>
+                    <span class="check-waarde positive">-1.00</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="André Zegers"
+                           data-rol="Chauffeur WT"
+                           data-waarde="-0.75">
+                    <span class="check-naam">André Zegers</span>
+                    <span class="check-waarde positive">-0.75</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Evert van Dasler"
+                           data-rol="Chauffeur WT"
+                           data-waarde="-0.5">
+                    <span class="check-naam">Evert van Dasler</span>
+                    <span class="check-waarde positive">-0.50</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Karel Manders"
+                           data-rol="Chauffeur WT"
+                           data-waarde="-0.5">
+                    <span class="check-naam">Karel Manders</span>
+                    <span class="check-waarde positive">-0.50</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Marco Giesbers"
+                           data-rol="Chauffeur WT"
+                           data-waarde="-0.5">
+                    <span class="check-naam">Marco Giesbers</span>
+                    <span class="check-waarde positive">-0.50</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="(Paul) Reserve Pager"
+                           data-rol="Chauffeur WT"
+                           data-waarde="0.0">
+                    <span class="check-naam">(Paul) Reserve Pager</span>
+                    <span class="check-waarde neutral">0.00</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Niek van der Wijst"
+                           data-rol="Chauffeur WT"
+                           data-waarde="0.0">
+                    <span class="check-naam">Niek van der Wijst</span>
+                    <span class="check-waarde neutral">0.00</span>
+                </label>
+            </div>
+        </div>
+        <div class="rol-groep" id="checkgroup-manschap-wt">
+            <h3>Manschap WT</h3>
+            <div class="checkbox-lijst">
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Daan Jansen"
+                           data-rol="Manschap WT"
+                           data-waarde="-2.0">
+                    <span class="check-naam">Daan Jansen</span>
+                    <span class="check-waarde positive">-2.00</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Bono Arts"
+                           data-rol="Manschap WT"
+                           data-waarde="-1.5">
+                    <span class="check-naam">Bono Arts</span>
+                    <span class="check-waarde positive">-1.50</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Teun van Tilborg"
+                           data-rol="Manschap WT"
+                           data-waarde="-1.33">
+                    <span class="check-naam">Teun van Tilborg</span>
+                    <span class="check-waarde positive">-1.33</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Jeroen Eerkens"
+                           data-rol="Manschap WT"
+                           data-waarde="-1.0">
+                    <span class="check-naam">Jeroen Eerkens</span>
+                    <span class="check-waarde positive">-1.00</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Maico van Dasler"
+                           data-rol="Manschap WT"
+                           data-waarde="0.0">
+                    <span class="check-naam">Maico van Dasler</span>
+                    <span class="check-waarde neutral">0.00</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Werner van Sambeek"
+                           data-rol="Manschap WT"
+                           data-waarde="0.0">
+                    <span class="check-naam">Werner van Sambeek</span>
+                    <span class="check-waarde neutral">0.00</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Wessel Pruissen"
+                           data-rol="Manschap WT"
+                           data-waarde="0.0">
+                    <span class="check-naam">Wessel Pruissen</span>
+                    <span class="check-waarde neutral">0.00</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Jeroen Cornelissen"
+                           data-rol="Manschap WT"
+                           data-waarde="80.75">
+                    <span class="check-naam">Jeroen Cornelissen</span>
+                    <span class="check-waarde negative">80.75</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Bram Schuurmans"
+                           data-rol="Manschap WT"
+                           data-waarde="85.0">
+                    <span class="check-naam">Bram Schuurmans</span>
+                    <span class="check-waarde negative">85.00</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Harm Verhoeven"
+                           data-rol="Manschap WT"
+                           data-waarde="85.45">
+                    <span class="check-naam">Harm Verhoeven</span>
+                    <span class="check-waarde negative">85.45</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Evert van Dasler"
+                           data-rol="Manschap WT"
+                           data-waarde="89.0">
+                    <span class="check-naam">Evert van Dasler</span>
+                    <span class="check-waarde negative">89.00</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Marco Giesbers"
+                           data-rol="Manschap WT"
+                           data-waarde="90.75">
+                    <span class="check-naam">Marco Giesbers</span>
+                    <span class="check-waarde negative">90.75</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Karel Manders"
+                           data-rol="Manschap WT"
+                           data-waarde="93.75">
+                    <span class="check-naam">Karel Manders</span>
+                    <span class="check-waarde negative">93.75</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="(Paul) Reserve Pager"
+                           data-rol="Manschap WT"
+                           data-waarde="95.0">
+                    <span class="check-naam">(Paul) Reserve Pager</span>
+                    <span class="check-waarde negative">95.00</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Niek van der Wijst"
+                           data-rol="Manschap WT"
+                           data-waarde="96.0">
+                    <span class="check-naam">Niek van der Wijst</span>
+                    <span class="check-waarde negative">96.00</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="Kevin Theunissen"
+                           data-rol="Manschap WT"
+                           data-waarde="96.6">
+                    <span class="check-naam">Kevin Theunissen</span>
+                    <span class="check-waarde negative">96.60</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="beschikbaar-check"
+                           data-naam="André Zegers"
+                           data-rol="Manschap WT"
+                           data-waarde="98.5">
+                    <span class="check-naam">André Zegers</span>
+                    <span class="check-waarde negative">98.50</span>
+                </label>
+            </div>
+        </div>
+                </div>
+            </div>
+
+            <!-- Rechts: voorstel resultaat -->
+            <div class="voorstel-resultaat">
+                <div class="panel-header">Voorstel</div>
+                <div id="voorstel-output">
+                    <table class="voorstel-table" id="voorstel-tabel">
+                        <thead>
+                            <tr>
+                                <th>Rol</th>
+                                <th>Naam</th>
+                                <th>Punten</th>
+                            </tr>
+                        </thead>
+                        <tbody id="voorstel-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: Overzicht per Rol -->
+    <div class="tab-panel" id="tab-overzicht">
+        <div class="grid">
+            
         <div class="rol-block" id="block-bevelvoerder">
             <h2>Bevelvoerder</h2>
             <table>
-                <thead>
-                    <tr>
-                        <th>Naam</th>
-                        <th>Waarde</th>
-                    </tr>
-                </thead>
+                <thead><tr><th>Naam</th><th>Waarde</th></tr></thead>
                 <tbody>
-                    
                 <tr>
                     <td>Emiel van Kessel</td>
                     <td class="positive">-0.50</td>
@@ -250,21 +938,14 @@
                 <tr>
                     <td>Teun van Tilborg</td>
                     <td class="neutral">0.00</td>
-                </tr>
-                </tbody>
+                </tr></tbody>
             </table>
         </div>
         <div class="rol-block" id="block-manschap">
             <h2>Manschap</h2>
             <table>
-                <thead>
-                    <tr>
-                        <th>Naam</th>
-                        <th>Waarde</th>
-                    </tr>
-                </thead>
+                <thead><tr><th>Naam</th><th>Waarde</th></tr></thead>
                 <tbody>
-                    
                 <tr>
                     <td>Daan Jansen</td>
                     <td class="positive">-1.50</td>
@@ -348,21 +1029,14 @@
                 <tr>
                     <td>Willem Huvenaars</td>
                     <td class="negative">96.00</td>
-                </tr>
-                </tbody>
+                </tr></tbody>
             </table>
         </div>
         <div class="rol-block" id="block-chauffeur-ts">
             <h2>Chauffeur TS</h2>
             <table>
-                <thead>
-                    <tr>
-                        <th>Naam</th>
-                        <th>Waarde</th>
-                    </tr>
-                </thead>
+                <thead><tr><th>Naam</th><th>Waarde</th></tr></thead>
                 <tbody>
-                    
                 <tr>
                     <td>Evert van Dasler</td>
                     <td class="positive">-2.25</td>
@@ -402,21 +1076,14 @@
                 <tr>
                     <td>Kevin Theunissen</td>
                     <td class="negative">96.07</td>
-                </tr>
-                </tbody>
+                </tr></tbody>
             </table>
         </div>
         <div class="rol-block" id="block-chauffeur-wt">
             <h2>Chauffeur WT</h2>
             <table>
-                <thead>
-                    <tr>
-                        <th>Naam</th>
-                        <th>Waarde</th>
-                    </tr>
-                </thead>
+                <thead><tr><th>Naam</th><th>Waarde</th></tr></thead>
                 <tbody>
-                    
                 <tr>
                     <td>Jeroen Cornelissen</td>
                     <td class="positive">-2.25</td>
@@ -456,21 +1123,14 @@
                 <tr>
                     <td>Niek van der Wijst</td>
                     <td class="neutral">0.00</td>
-                </tr>
-                </tbody>
+                </tr></tbody>
             </table>
         </div>
         <div class="rol-block" id="block-manschap-wt">
             <h2>Manschap WT</h2>
             <table>
-                <thead>
-                    <tr>
-                        <th>Naam</th>
-                        <th>Waarde</th>
-                    </tr>
-                </thead>
+                <thead><tr><th>Naam</th><th>Waarde</th></tr></thead>
                 <tbody>
-                    
                 <tr>
                     <td>Daan Jansen</td>
                     <td class="positive">-2.00</td>
@@ -538,10 +1198,104 @@
                 <tr>
                     <td>André Zegers</td>
                     <td class="negative">98.50</td>
-                </tr>
-                </tbody>
+                </tr></tbody>
             </table>
         </div>
+        </div>
     </div>
+
+    <script>
+        // Originele data vanuit Python
+        const origineelVoorstel = [{"rol": "Bevelvoerder", "naam": "Emiel van Kessel", "waarde": -0.5}, {"rol": "Chauffeur TS", "naam": "Evert van Dasler", "waarde": -2.25}, {"rol": "Chauffeur WT", "naam": "Jeroen Cornelissen", "waarde": -2.25}, {"rol": "Manschap WT", "naam": "Daan Jansen", "waarde": -2.0}, {"rol": "Manschap 1", "naam": "Werner van Sambeek", "waarde": -1.0}, {"rol": "Manschap 2", "naam": "Bram Schuurmans", "waarde": -0.5}, {"rol": "Manschap 3", "naam": "Kevin Theunissen", "waarde": -0.4}, {"rol": "Manschap 4", "naam": "Maico van Dasler", "waarde": -0.33}];
+
+        // Alle personen per rol vanuit checkboxes
+        function getBeschikbarePersonen() {
+            const beschikbaar = {};
+            document.querySelectorAll('.beschikbaar-check').forEach(cb => {
+                const rol = cb.dataset.rol;
+                if (!beschikbaar[rol]) beschikbaar[rol] = [];
+                if (cb.checked) {
+                    beschikbaar[rol].push({
+                        naam: cb.dataset.naam,
+                        waarde: parseFloat(cb.dataset.waarde)
+                    });
+                }
+            });
+            return beschikbaar;
+        }
+
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        function alleDeselecteren() {
+            document.querySelectorAll('.beschikbaar-check').forEach(cb => cb.checked = false);
+            herbereken();
+        }
+
+        function herbereken() {
+            const beschikbaar = getBeschikbarePersonen();
+            const gekozen = new Set();
+            const tbody = document.getElementById('voorstel-body');
+            tbody.innerHTML = '';
+
+            const taken = [
+                { label: 'Bevelvoerder', rol: 'Bevelvoerder', aantal: 1 },
+                { label: 'Chauffeur TS',  rol: 'Chauffeur TS',  aantal: 1 },
+                { label: 'Chauffeur WT',  rol: 'Chauffeur WT',  aantal: 1 },
+                { label: 'Manschap WT',   rol: 'Manschap WT',   aantal: 1 },
+                { label: 'Manschap',      rol: 'Manschap',      aantal: 4 },
+            ];
+
+            taken.forEach(taak => {
+                const kandidaten = (beschikbaar[taak.rol] || [])
+                    .filter(p => !gekozen.has(p.naam))
+                    .sort((a, b) => a.waarde - b.waarde);
+
+                const slots = taak.aantal;
+                for (let i = 0; i < slots; i++) {
+                    const displayLabel = slots > 1 ? `${taak.label} ${i + 1}` : taak.label;
+                    if (i < kandidaten.length) {
+                        const p = kandidaten[i];
+                        gekozen.add(p.naam);
+                        const colorClass = p.waarde < 0 ? 'positive' : p.waarde > 0 ? 'negative' : 'neutral';
+                        tbody.innerHTML += `
+                            <tr>
+                                <td><span class="badge">${displayLabel}</span></td>
+                                <td>${p.naam}</td>
+                                <td class="${colorClass}">${p.waarde.toFixed(2)}</td>
+                            </tr>`;
+                    } else {
+                        tbody.innerHTML += `
+                            <tr>
+                                <td><span class="badge vervangen">${displayLabel}</span></td>
+                                <td style="color:#4a5568;font-style:italic;">— niet beschikbaar —</td>
+                                <td></td>
+                            </tr>`;
+                    }
+                }
+            });
+
+            if (tbody.innerHTML === '') {
+                tbody.innerHTML = '<tr><td colspan="3" class="voorstel-leeg">Vink personen aan om een voorstel te genereren.</td></tr>';
+            }
+        }
+
+        // Init: toon standaard voorstel op basis van originele data
+        (function initVoorstel() {
+            // Zet de checkboxes aan voor mensen in het originele voorstel
+            const voorgesteldeNamen = new Set(origineelVoorstel.map(r => r.naam));
+            document.querySelectorAll('.beschikbaar-check').forEach(cb => {
+                if (voorgesteldeNamen.has(cb.dataset.naam)) {
+                    cb.checked = true;
+                }
+            });
+
+            herbereken();
+        })();
+    </script>
 </body>
 </html>
