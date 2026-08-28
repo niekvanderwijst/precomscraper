@@ -4,6 +4,7 @@ from zoneinfo import ZoneInfo
 from playwright.sync_api import sync_playwright
 import os
 import json
+import random
 
 
 USERNAME = os.environ["PRECOM_USERNAME"]
@@ -67,9 +68,17 @@ def build_voorstel_data(df: pd.DataFrame) -> list:
     def kies_persoon(rol: str, aantal: int = 1):
         if rol not in df.columns:
             return []
-        serie = df[rol].dropna().sort_values()
+        serie = df[rol].dropna()
+
+        # Shuffle eerst zodat gelijke punten random worden gekozen
+        items = list(serie.items())
+        random.shuffle(items)
+
+        # Dan stabiel sorteren op waarde — gelijke waarden behouden random volgorde
+        items.sort(key=lambda x: x[1])
+
         resultaat = []
-        for naam, waarde in serie.items():
+        for naam, waarde in items:
             if naam not in gekozen:
                 gekozen.add(naam)
                 resultaat.append((naam, waarde))
@@ -492,8 +501,6 @@ def export_to_html(df: pd.DataFrame, filepath: str = "index.html"):
     </div>
 
     <script>
-        const origineelVoorstel = {voorstel_json};
-
         function switchTab(tabId, btn) {{
             document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -511,6 +518,14 @@ def export_to_html(df: pd.DataFrame, filepath: str = "index.html"):
             herbereken();
         }}
 
+        function shuffle(lijst) {{
+            for (let i = lijst.length - 1; i > 0; i--) {{
+                const j = Math.floor(Math.random() * (i + 1));
+                [lijst[i], lijst[j]] = [lijst[j], lijst[i]];
+            }}
+            return lijst;
+        }}
+
         function herbereken() {{
             const beschikbaarPerRol = {{}};
 
@@ -524,9 +539,11 @@ def export_to_html(df: pd.DataFrame, filepath: str = "index.html"):
                 }});
             }});
 
-            Object.values(beschikbaarPerRol).forEach(lijst =>
-                lijst.sort((a, b) => a.waarde - b.waarde)
-            );
+            // Shuffle eerst, dan sorteren op waarde zodat gelijke punten random worden gekozen
+            Object.values(beschikbaarPerRol).forEach(lijst => {{
+                shuffle(lijst);
+                lijst.sort((a, b) => a.waarde - b.waarde);
+            }});
 
             const gekozen = new Set();
             const tbody = document.getElementById('voorstel-body');
