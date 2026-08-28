@@ -61,9 +61,6 @@ def read_occupancy_table(page) -> pd.DataFrame:
 
 
 def build_voorstel_data(df: pd.DataFrame) -> list:
-    """
-    Geeft een lijst van dicts terug met rol, naam en waarde voor de voorgestelde bezetting.
-    """
     gekozen = set()
     rijen = []
 
@@ -102,10 +99,6 @@ def build_voorstel_data(df: pd.DataFrame) -> list:
 
 
 def build_unieke_namen(df: pd.DataFrame) -> list:
-    """
-    Geeft een alfabetisch gesorteerde lijst van unieke namen terug
-    met per naam de rollen en bijbehorende waarden.
-    """
     naam_rollen = {}
     for rol in df.columns:
         serie = df[rol].dropna()
@@ -114,7 +107,6 @@ def build_unieke_namen(df: pd.DataFrame) -> list:
                 naam_rollen[naam] = []
             naam_rollen[naam].append({"rol": rol, "waarde": waarde})
 
-    # Sorteer alfabetisch op naam
     gesorteerd = sorted(naam_rollen.items(), key=lambda x: x[0].lower())
     return [{"naam": naam, "rollen": rollen} for naam, rollen in gesorteerd]
 
@@ -128,8 +120,6 @@ def export_to_html(df: pd.DataFrame, filepath: str = "index.html"):
 
     voorstel_json = json.dumps(voorstel_data)
 
-    # Bouw checkboxes: één lijst, alfabetisch, elke naam één keer
-    # Sla per naam alle rollen+waarden op als data-attribuut voor JS
     checkboxes_html = ""
     for persoon in unieke_namen:
         naam = persoon["naam"]
@@ -143,7 +133,6 @@ def export_to_html(df: pd.DataFrame, filepath: str = "index.html"):
                 <span class="check-naam">{naam}</span>
             </label>"""
 
-    # Bouw overzicht rijen html
     sections_html = ""
     for rol in df.columns:
         serie = df[rol].dropna().sort_values()
@@ -203,8 +192,8 @@ def export_to_html(df: pd.DataFrame, filepath: str = "index.html"):
         .tabs {{
             display: flex;
             gap: 0.5rem;
-            margin-bottom: 1.5rem;
             border-bottom: 2px solid #2a2d3e;
+            margin-bottom: 1.5rem;
         }}
 
         .tab-btn {{
@@ -291,71 +280,6 @@ def export_to_html(df: pd.DataFrame, filepath: str = "index.html"):
         .neutral  {{ color: #718096; }}
 
         /* ── Voorstel tab ── */
-        .voorstel-layout {{
-            display: grid;
-            grid-template-columns: 320px 1fr;
-            gap: 1.5rem;
-        }}
-
-        @media (max-width: 900px) {{
-            .voorstel-layout {{ grid-template-columns: 1fr; }}
-        }}
-
-        /* Beschikbaarheid selectie */
-        .beschikbaarheid-panel {{
-            background: #1e2130;
-            border-radius: 8px;
-            border: 1px solid #2a2d3e;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }}
-
-        .panel-header {{
-            background: #2a2d3e;
-            padding: 0.85rem 1rem;
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: #a0aec0;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            flex-shrink: 0;
-        }}
-
-        .beschikbaarheid-body {{
-            padding: 0.75rem;
-            overflow-y: auto;
-            max-height: 560px;
-        }}
-
-        .checkbox-item {{
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            padding: 0.4rem 0.5rem;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.15s;
-        }}
-
-        .checkbox-item:hover {{ background: #252837; }}
-
-        .checkbox-item input[type="checkbox"] {{
-            width: 15px;
-            height: 15px;
-            accent-color: #90cdf4;
-            cursor: pointer;
-            flex-shrink: 0;
-        }}
-
-        .check-naam {{
-            flex: 1;
-            font-size: 0.9rem;
-            color: #cbd5e0;
-        }}
-
-        /* Acties knoppen */
         .voorstel-acties {{
             display: flex;
             gap: 0.75rem;
@@ -387,13 +311,70 @@ def export_to_html(df: pd.DataFrame, filepath: str = "index.html"):
             border: 1px solid #2a2d3e;
         }}
 
-        /* Voorstel resultaat */
+        .voorstel-layout {{
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 1.5rem;
+            align-items: start;
+        }}
+
+        @media (max-width: 900px) {{
+            .voorstel-layout {{ grid-template-columns: 1fr; }}
+        }}
+
+        .beschikbaarheid-panel {{
+            background: #1e2130;
+            border-radius: 8px;
+            border: 1px solid #2a2d3e;
+            overflow: hidden;
+        }}
+
+        .panel-header {{
+            background: #2a2d3e;
+            padding: 0.85rem 1rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #a0aec0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }}
+
+        .beschikbaarheid-body {{
+            padding: 0.75rem;
+        }}
+
+        .checkbox-item {{
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.4rem 0.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }}
+
+        .checkbox-item:hover {{ background: #252837; }}
+
+        .checkbox-item input[type="checkbox"] {{
+            width: 15px;
+            height: 15px;
+            accent-color: #90cdf4;
+            cursor: pointer;
+            flex-shrink: 0;
+        }}
+
+        .check-naam {{
+            flex: 1;
+            font-size: 0.9rem;
+            color: #cbd5e0;
+        }}
+
         .voorstel-resultaat {{
             background: #1e2130;
             border-radius: 8px;
             border: 1px solid #3d4f7c;
             overflow: hidden;
-            align-self: start;
         }}
 
         .voorstel-resultaat .panel-header {{
@@ -427,12 +408,6 @@ def export_to_html(df: pd.DataFrame, filepath: str = "index.html"):
 
         .voorstel-table tr:hover td {{ background: #252837; }}
 
-        .voorstel-table td:last-child {{
-            text-align: right;
-            font-variant-numeric: tabular-nums;
-            font-weight: 500;
-        }}
-
         .voorstel-table td:first-child {{
             color: #90cdf4;
             width: 180px;
@@ -459,11 +434,6 @@ def export_to_html(df: pd.DataFrame, filepath: str = "index.html"):
             font-size: 0.9rem;
             text-align: center;
         }}
-
-        /* Scrollbar styling */
-        .beschikbaarheid-body::-webkit-scrollbar {{ width: 6px; }}
-        .beschikbaarheid-body::-webkit-scrollbar-track {{ background: #1e2130; }}
-        .beschikbaarheid-body::-webkit-scrollbar-thumb {{ background: #2a2d3e; border-radius: 3px; }}
     </style>
 </head>
 <body>
@@ -493,7 +463,6 @@ def export_to_html(df: pd.DataFrame, filepath: str = "index.html"):
         </div>
 
         <div class="voorstel-layout">
-            <!-- Links: beschikbaarheid aanvinken -->
             <div class="beschikbaarheid-panel">
                 <div class="panel-header">✅ Beschikbaarheid</div>
                 <div class="beschikbaarheid-body">
@@ -501,7 +470,6 @@ def export_to_html(df: pd.DataFrame, filepath: str = "index.html"):
                 </div>
             </div>
 
-            <!-- Rechts: voorstel resultaat -->
             <div class="voorstel-resultaat">
                 <div class="panel-header">⚡ Voorstel</div>
                 <table class="voorstel-table">
@@ -509,10 +477,15 @@ def export_to_html(df: pd.DataFrame, filepath: str = "index.html"):
                         <tr>
                             <th>Rol</th>
                             <th>Naam</th>
-                            <th>Punten</th>
                         </tr>
                     </thead>
-                    <tbody id="voorstel-body"></tbody>
+                    <tbody id="voorstel-body">
+                        <tr>
+                            <td colspan="2" class="voorstel-leeg">
+                                Vink personen aan om een voorstel te genereren.
+                            </td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -539,7 +512,6 @@ def export_to_html(df: pd.DataFrame, filepath: str = "index.html"):
         }}
 
         function herbereken() {{
-            // Bouw een map: rol -> gesorteerde lijst van beschikbare personen
             const beschikbaarPerRol = {{}};
 
             document.querySelectorAll('.beschikbaar-check').forEach(cb => {{
@@ -552,7 +524,6 @@ def export_to_html(df: pd.DataFrame, filepath: str = "index.html"):
                 }});
             }});
 
-            // Sorteer elke rol op waarde (laag naar hoog)
             Object.values(beschikbaarPerRol).forEach(lijst =>
                 lijst.sort((a, b) => a.waarde - b.waarde)
             );
@@ -569,11 +540,14 @@ def export_to_html(df: pd.DataFrame, filepath: str = "index.html"):
                 {{ label: 'Manschap',      rol: 'Manschap',      aantal: 4 }},
             ];
 
+            let heeftInhoud = false;
+
             taken.forEach(taak => {{
                 const kandidaten = (beschikbaarPerRol[taak.rol] || [])
                     .filter(p => !gekozen.has(p.naam));
 
                 for (let i = 0; i < taak.aantal; i++) {{
+                    heeftInhoud = true;
                     const displayLabel = taak.aantal > 1
                         ? `${{taak.label}} ${{i + 1}}`
                         : taak.label;
@@ -581,38 +555,25 @@ def export_to_html(df: pd.DataFrame, filepath: str = "index.html"):
                     if (i < kandidaten.length) {{
                         const p = kandidaten[i];
                         gekozen.add(p.naam);
-                        const colorClass = p.waarde < 0 ? 'positive'
-                                         : p.waarde > 0 ? 'negative' : 'neutral';
                         tbody.innerHTML += `
                             <tr>
                                 <td><span class="badge">${{displayLabel}}</span></td>
                                 <td>${{p.naam}}</td>
-                                <td class="${{colorClass}}">${{p.waarde.toFixed(2)}}</td>
                             </tr>`;
                     }} else {{
                         tbody.innerHTML += `
                             <tr>
                                 <td><span class="badge vervangen">${{displayLabel}}</span></td>
                                 <td style="color:#4a5568;font-style:italic;">— niet beschikbaar —</td>
-                                <td></td>
                             </tr>`;
                     }}
                 }}
             }});
 
-            if (tbody.innerHTML === '') {{
-                tbody.innerHTML = '<tr><td colspan="3" class="voorstel-leeg">Vink personen aan om een voorstel te genereren.</td></tr>';
+            if (!heeftInhoud) {{
+                tbody.innerHTML = '<tr><td colspan="2" class="voorstel-leeg">Vink personen aan om een voorstel te genereren.</td></tr>';
             }}
         }}
-
-        // Init: vink de origineel voorgestelde namen aan en toon voorstel
-        (function init() {{
-            const voorgesteldeNamen = new Set(origineelVoorstel.map(r => r.naam));
-            document.querySelectorAll('.beschikbaar-check').forEach(cb => {{
-                cb.checked = voorgesteldeNamen.has(cb.dataset.naam);
-            }});
-            herbereken();
-        }})();
     </script>
 </body>
 </html>"""
